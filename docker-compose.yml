@@ -1,0 +1,29 @@
+services:
+  # Gateway mode. The ION account id and access token arrive per request on
+  # X-TDSynnex-Account-Id and X-TDSynnex-Access-Token (the gateway owns
+  # refresh-token rotation). Do not set TDSYNNEX_ACCOUNT_ID,
+  # TDSYNNEX_REFRESH_TOKEN, TDSYNNEX_ACCESS_TOKEN, or env_file here — that
+  # would put static vendor credentials in the container. The project .env is
+  # used only for Compose interpolation. For AUTH_MODE=env, pass those
+  # variables on that process instead (see the README).
+  td-synnex-mcp:
+    build: .
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      - MCP_TRANSPORT=http
+      - MCP_HTTP_PORT=8080
+      - MCP_HTTP_HOST=0.0.0.0
+      - AUTH_MODE=gateway
+      - CONDUIT_S2S_SECRET=${CONDUIT_S2S_SECRET:?set CONDUIT_S2S_SECRET}
+      # Write tools stay hidden and refused unless this is exactly "false".
+      - READ_ONLY_MODE=${READ_ONLY_MODE:-true}
+      # Optional: a stable key (>= 32 bytes) so order confirm tokens survive restarts / work across replicas.
+      - TDSYNNEX_CONFIRM_SECRET=${TDSYNNEX_CONFIRM_SECRET:-}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s

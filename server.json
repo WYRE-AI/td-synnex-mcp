@@ -1,0 +1,98 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.WYRE-AI/td-synnex-mcp",
+  "title": "TD SYNNEX StreamOne ION",
+  "description": "MCP server for TD SYNNEX StreamOne ION (v3 API) — customers, products and pricing, orders, subscriptions, and carts/quotes. Read-only by default. Untested against the live API.",
+  "repository": {
+    "url": "https://github.com/WYRE-AI/td-synnex-mcp",
+    "source": "github"
+  },
+  "version": "0.0.0",
+  "websiteUrl": "https://github.com/WYRE-AI/td-synnex-mcp",
+  "packages": [
+    {
+      "registryType": "oci",
+      "identifier": "ghcr.io/wyre-ai/td-synnex-mcp:0.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "TDSYNNEX_ACCOUNT_ID",
+          "description": "StreamOne ION reseller account id (ION portal: Quick Access > Account Information)",
+          "isRequired": true,
+          "format": "string"
+        },
+        {
+          "name": "TDSYNNEX_REFRESH_TOKEN",
+          "description": "StreamOne ION OAuth refresh token (ION portal: Settings > Users > Edit > OAuth credentials > Request New Credentials). Single-use and rotating; pair with TDSYNNEX_REFRESH_TOKEN_FILE to persist the rotated token. Set this, TDSYNNEX_REFRESH_TOKEN_FILE, or TDSYNNEX_ACCESS_TOKEN.",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "TDSYNNEX_REFRESH_TOKEN_FILE",
+          "description": "Path of a file holding the current refresh token. Read at first use (wins over TDSYNNEX_REFRESH_TOKEN) and rewritten atomically (mode 0600) after every token rotation.",
+          "isRequired": false,
+          "format": "string"
+        },
+        {
+          "name": "TDSYNNEX_ACCESS_TOKEN",
+          "description": "Static access (bearer) token, valid 2 hours and not renewed. Ignored when a refresh token or token file is set.",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "READ_ONLY_MODE",
+          "description": "Read-only by default: write tools are not listed and are refused. Only the exact value 'false' enables writes (customers, carts, orders; orders and cancellations also need preview/confirm).",
+          "isRequired": false,
+          "default": "true",
+          "format": "string"
+        },
+        {
+          "name": "TDSYNNEX_MAX_ORDER_LINES",
+          "description": "Local cap on order lines per order or checkout (not a TD SYNNEX limit)",
+          "isRequired": false,
+          "default": "25",
+          "format": "string"
+        },
+        {
+          "name": "TDSYNNEX_MAX_LINE_QUANTITY",
+          "description": "Local cap on quantity per order line (not a TD SYNNEX limit)",
+          "isRequired": false,
+          "default": "1000",
+          "format": "string"
+        },
+        {
+          "name": "TDSYNNEX_CONFIRM_SECRET",
+          "description": "HMAC key (at least 32 bytes) for order confirm tokens. If unset a random per-process key is used and tokens do not survive restarts.",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "MCP_TRANSPORT",
+          "description": "Transport mode for the server. Set to 'stdio' for local CLI use; the image defaults to 'http' for gateway hosting.",
+          "isRequired": false,
+          "default": "stdio",
+          "format": "string"
+        },
+        {
+          "name": "AUTH_MODE",
+          "description": "Credential source for HTTP: 'env' reads TDSYNNEX_* locally, 'gateway' requires X-TDSynnex-Account-Id and X-TDSynnex-Access-Token headers from the WYRE MCP Gateway.",
+          "isRequired": false,
+          "default": "env",
+          "format": "string"
+        },
+        {
+          "name": "LOG_LEVEL",
+          "description": "Log verbosity: debug, info, warn, error",
+          "isRequired": false,
+          "default": "info",
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}
