@@ -332,7 +332,7 @@ const createCart = def(
     customerId,
     cartDisplayName: textSchema('Display name, e.g. "Cart - 1234".', 200),
     userName: textSchema('User associated with the cart.', 200),
-    paymentType: { type: 'string', enum: [...PAYMENT_TYPES] },
+    paymentType: { type: 'string', enum: [...PAYMENT_TYPES], description: 'How the cart is paid. Pick one of the listed values.' },
     creditCardName: textSchema('Credit card name (the docs list it as required; send it when paymentType is CREDIT_CARD).', 100),
     status: { type: 'string', enum: [...CART_STATUSES], description: 'Use QUOTE to create a quote.' },
     currencyCode: textSchema('Currency code, e.g. USD.', 3),

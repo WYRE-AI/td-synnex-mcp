@@ -1,6 +1,6 @@
 # TD SYNNEX StreamOne ION connector
 
-User-facing setup guide for the WYRE connector to TD SYNNEX StreamOne ION. Developer and deployment details are in the [README](../README.md).
+User-facing setup guide for the WYRE AI connector to TD SYNNEX StreamOne ION. Developer and deployment details are in the [README](../README.md).
 
 > **Status:** not yet tested against a live StreamOne ION account. Treat results with care and expect rough edges until it has been validated.
 
@@ -21,11 +21,11 @@ ION is a cloud/subscription marketplace: there is no physical stock level. "Avai
 1. **Your account id** — ION portal → *Quick Access → Account Information*.
 2. **An OAuth refresh token** for a dedicated API user — ION portal → *Settings → Users → pick the user → Edit → OAuth credentials → Request New Credentials*, then copy the Refresh Token.
 
-> Refresh tokens are **single-use**: each time one is exchanged, ION issues a new one and the old one stops working. Whoever connects ION (WYRE Conduit, or the local server) must store the newest token. If the stored token is lost or expires (32 days), generate a new one in the portal and reconnect.
+> Refresh tokens are **single-use**: each time one is exchanged, ION issues a new one and the old one stops working. Whoever connects ION (WYRE AI, or the local server) must store the newest token. If the stored token is lost or expires (32 days), generate a new one in the portal and reconnect.
 
 ## Connecting
 
-- **Through the WYRE gateway (Conduit):** add the connector, enter the account id and refresh token once. The gateway keeps the rotating token fresh and passes the MCP server a current access token on every call. Nothing else to configure.
+- **Through the WYRE AI gateway:** add the connector, enter the account id and refresh token once. The gateway keeps the rotating token fresh and passes the MCP server a current access token on every call. Nothing else to configure.
 - **Locally (Claude Desktop / CLI, stdio):** set `TDSYNNEX_ACCOUNT_ID`, `TDSYNNEX_REFRESH_TOKEN` and `TDSYNNEX_REFRESH_TOKEN_FILE` (a file the server may write, so the rotated token survives restarts). See `.env.example`.
 
 ## Read-only by default

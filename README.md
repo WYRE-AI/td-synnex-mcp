@@ -1,6 +1,6 @@
 # TD SYNNEX StreamOne ION MCP Server
 
-MCP server for [TD SYNNEX StreamOne ION](https://www.tdsynnex.com/ion/api/)'s v3 partner API: customers, products and pricing, orders, subscriptions, and carts/quotes, for AI assistants and the WYRE Conduit gateway.
+MCP server for [TD SYNNEX StreamOne ION](https://www.tdsynnex.com/ion/api/)'s v3 partner API: customers, products and pricing, orders, subscriptions, and carts/quotes, for AI assistants and the WYRE AI gateway.
 
 > **Status: untested against the live StreamOne ION API.** Built from the public docs with mocked tests only; no StreamOne ION credentials were available.
 
@@ -23,9 +23,9 @@ Because every exchange invalidates the refresh token you gave it, *whoever excha
 | Mode | Who owns rotation | What this server does |
 |---|---|---|
 | **stdio / `AUTH_MODE=env`** | This server | Exchanges the refresh token, caches the access token in memory until ~60 s before expiry, single-flights concurrent refreshes (one exchange, shared), and keeps the rotated refresh token in memory. With `TDSYNNEX_REFRESH_TOKEN_FILE` set it also writes the rotated token back (atomic write, mode `0600`) and reads it from there on start. **Without the file, a restart loses the rotated token and the originally configured one is already invalid — you must generate a new one in the ION portal.** A warning (no values) is logged on first exchange if no file is configured. Exchanges are never retried automatically (a lost response may already have consumed the token). |
-| **`AUTH_MODE=gateway`** (Docker default) | The gateway (Conduit) | The server **never sees the refresh token**. The gateway exchanges and rotates it, and sends a current access token with each request in `X-TDSynnex-Access-Token`. A stateless sidecar that exchanged the stored refresh token itself would invalidate the gateway's copy, so this mode deliberately has no exchange path. |
+| **`AUTH_MODE=gateway`** (Docker default) | The WYRE AI gateway | The server **never sees the refresh token**. The gateway exchanges and rotates it, and sends a current access token with each request in `X-TDSynnex-Access-Token`. A stateless sidecar that exchanged the stored refresh token itself would invalidate the gateway's copy, so this mode deliberately has no exchange path. |
 
-> **Conduit integration requirement:** in gateway mode the gateway must own the refresh-token lifecycle (store the latest refresh token, exchange it before the 2-hour access token expires — or on a 401 —, persist the rotated token, and inject `X-TDSynnex-Account-Id` + `X-TDSynnex-Access-Token` on every `/mcp` request). A missing header returns 401; there is no env fallback.
+> **WYRE AI gateway integration requirement:** in gateway mode the gateway must own the refresh-token lifecycle (store the latest refresh token, exchange it before the 2-hour access token expires — or on a 401 —, persist the rotated token, and inject `X-TDSynnex-Account-Id` + `X-TDSynnex-Access-Token` on every `/mcp` request). A missing header returns 401; there is no env fallback.
 
 A static `TDSYNNEX_ACCESS_TOKEN` is also accepted for quick local tests; it expires after 2 hours and is not renewed.
 

@@ -9,7 +9,7 @@ import { CONFIRM_SECRET_MIN_BYTES } from './order-safety.js';
 import { verifyS2sHeader, S2S_HEADER } from './s2s-verify.js';
 import type { RequestCredentials } from './types.js';
 
-// Conduit service-to-service auth (gateway#377 parity). HTTP startup fails
+// WYRE AI gateway service-to-service auth (gateway#377 parity). HTTP startup fails
 // closed: an empty CONDUIT_S2S_SECRET, or a known placeholder, refuses to
 // boot unless MCP_ALLOW_INSECURE_DEV=1 (placeholders never qualify). That
 // bypass skips X-Gateway-S2S and binds 127.0.0.1 only. A configured secret
